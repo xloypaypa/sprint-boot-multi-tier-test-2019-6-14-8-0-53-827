@@ -25,7 +25,11 @@ public class ParkingBoyResource {
 
     @PutMapping
     public ResponseEntity addNewParkingBoy(@RequestBody ParkingBoy parkingBoy) {
-        this.parkingBoyRepository.save(parkingBoy);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        try {
+            this.parkingBoyRepository.save(parkingBoy);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }
