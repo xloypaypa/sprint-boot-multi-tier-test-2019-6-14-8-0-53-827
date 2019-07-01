@@ -1,7 +1,6 @@
 package com.oocl.web.sampleWebApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.oocl.web.sampleWebApp.domain.ParkingBoy;
 import com.oocl.web.sampleWebApp.domain.ParkingLot;
 
 import java.util.Objects;
@@ -21,7 +20,7 @@ public class ParkingLotResponse {
     }
 
     public static ParkingLotResponse create(ParkingLot entity) {
-        return create(entity.getParkingLotId(), entity.getCapacity(), entity.getCapacity());
+        return create(entity.getParkingLotID(), entity.getCapacity(), entity.getCapacity());
     }
 
     @JsonIgnore

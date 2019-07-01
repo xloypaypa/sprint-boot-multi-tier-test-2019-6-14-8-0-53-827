@@ -1,10 +1,9 @@
 package com.oocl.web.sampleWebApp.domain;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "parking_lot")
 public class ParkingLot {
 
     @Id
@@ -12,7 +11,7 @@ public class ParkingLot {
     private Long id;
 
     @Column(name = "parking_lot_id", length = 64, unique = true, nullable = false)
-    private String parkingLotId;
+    private String parkingLotID;
 
     @Column(name = "capacity")
     private int capacity;
@@ -21,12 +20,12 @@ public class ParkingLot {
         return id;
     }
 
-    public String getParkingLotId() {
-        return parkingLotId;
+    public String getParkingLotID() {
+        return parkingLotID;
     }
 
-    public void setParkingLotId(String parkingLotId) {
-        this.parkingLotId = parkingLotId;
+    public void setParkingLotID(String parkingLotID) {
+        this.parkingLotID = parkingLotID;
     }
 
     public int getCapacity() {
@@ -39,8 +38,8 @@ public class ParkingLot {
 
     protected ParkingLot() {}
 
-    public ParkingLot(String parkingLotId, int capacity) {
-        this.parkingLotId = parkingLotId;
+    public ParkingLot(String parkingLotID, int capacity) {
+        this.parkingLotID = parkingLotID;
         this.capacity = capacity;
     }
 
