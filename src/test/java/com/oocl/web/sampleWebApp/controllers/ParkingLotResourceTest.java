@@ -56,9 +56,7 @@ public class ParkingLotResourceTest {
         MvcResult mvcResult = this.mockMvc.perform(get("/parkinglots")).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
-
         final ParkingLotResponse[] parkingLots = getContentAsObject(mvcResult, ParkingLotResponse[].class);
-
         assertEquals(1, parkingLots.length);
         assertEquals("1", parkingLots[0].getParkingLotID());
         assertEquals(1, parkingLots[0].getCapacity());
