@@ -5,7 +5,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
 
-class WebTestUtil {
+public class WebTestUtil {
     public static <T> T toObject(String jsonContent, Class<T> clazz) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jsonContent, clazz);
