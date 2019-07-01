@@ -10,8 +10,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,5 +31,14 @@ public class ParkingBoyResourceTest {
         this.mockMvc.perform(put("/parkingboys")
                 .contentType(MediaType.APPLICATION_JSON).content("{\"employeeId\":\"1\"}"))
                 .andDo(print()).andExpect(status().isCreated());
+    }
+
+    @Test
+    @DirtiesContext
+    public void should_can_get_all_parking_boy() throws Exception {
+        this.mockMvc.perform(get("/parkingboys"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(is("[{\"employeeId\":\"boy\"}]")));
     }
 }
