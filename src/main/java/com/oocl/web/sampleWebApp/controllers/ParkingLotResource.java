@@ -1,9 +1,7 @@
 package com.oocl.web.sampleWebApp.controllers;
 
-import com.oocl.web.sampleWebApp.domain.ParkingBoy;
 import com.oocl.web.sampleWebApp.domain.ParkingLot;
 import com.oocl.web.sampleWebApp.domain.ParkingLotRepository;
-import com.oocl.web.sampleWebApp.models.ParkingBoyResponse;
 import com.oocl.web.sampleWebApp.models.ParkingLotResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +28,11 @@ public class ParkingLotResource {
         if (parkingLot.getCapacity() > 100 || parkingLot.getCapacity() <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        this.parkingLotRepository.save(parkingLot);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        try {
+            this.parkingLotRepository.save(parkingLot);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }

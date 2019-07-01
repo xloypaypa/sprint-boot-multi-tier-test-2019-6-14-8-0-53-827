@@ -50,6 +50,17 @@ public class ParkingLotResourceTest {
 
     @Test
     @DirtiesContext
+    public void should_get_400_when_the_parking_lot_id_already_existing() throws Exception {
+        this.parkingLotRepository.save(new ParkingLot("1", 1));
+
+        MvcResult mvcResult = this.mockMvc.perform(put("/parkinglots")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"parkingLotID\":\"1\", \"capacity\":2}")).andReturn();
+
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    @DirtiesContext
     public void should_can_get_all_parking_lot() throws Exception {
         this.parkingLotRepository.save(new ParkingLot("1", 1));
 
