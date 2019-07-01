@@ -1,5 +1,7 @@
 package com.oocl.web.sampleWebApp.controllers;
 
+import com.oocl.web.sampleWebApp.domain.ParkingBoy;
+import com.oocl.web.sampleWebApp.domain.ParkingBoyRepository;
 import com.oocl.web.sampleWebApp.domain.ParkingLot;
 import com.oocl.web.sampleWebApp.domain.ParkingLotRepository;
 import com.oocl.web.sampleWebApp.models.ParkingLotResponse;
@@ -30,6 +32,9 @@ public class ParkingLotResourceTest {
     private ParkingLotRepository parkingLotRepository;
 
     @Autowired
+    private ParkingBoyRepository parkingBoyRepository;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Test
@@ -51,7 +56,7 @@ public class ParkingLotResourceTest {
     @Test
     @DirtiesContext
     public void should_get_400_when_the_parking_lot_id_already_existing() throws Exception {
-        this.parkingLotRepository.save(new ParkingLot("1", 1));
+        this.parkingLotRepository.save(new ParkingLot("1", 1, null));
 
         MvcResult mvcResult = this.mockMvc.perform(put("/parkinglots")
                 .contentType(MediaType.APPLICATION_JSON).content("{\"parkingLotID\":\"1\", \"capacity\":2}")).andReturn();
@@ -62,7 +67,7 @@ public class ParkingLotResourceTest {
     @Test
     @DirtiesContext
     public void should_can_get_all_parking_lot() throws Exception {
-        this.parkingLotRepository.save(new ParkingLot("1", 1));
+        this.parkingLotRepository.save(new ParkingLot("1", 1, null));
 
         MvcResult mvcResult = this.mockMvc.perform(get("/parkinglots")).andReturn();
 
@@ -72,4 +77,51 @@ public class ParkingLotResourceTest {
         assertEquals("1", parkingLots[0].getParkingLotID());
         assertEquals(1, parkingLots[0].getCapacity());
     }
+
+    @Test
+    @DirtiesContext
+    public void should_can_associate_parking_lot_to_parking_boy() throws Exception {
+        this.parkingBoyRepository.save(new ParkingBoy("boy"));
+        this.parkingLotRepository.save(new ParkingLot("1", 1, null));
+
+        MvcResult mvcResult = this.mockMvc.perform(put("/parkinglots/1/parkingboy")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"employeeId\":\"boy\"}")).andReturn();
+
+        assertEquals(201, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    @DirtiesContext
+    public void should_get_bad_request_when_parking_lot_already_associated() throws Exception {
+        this.parkingBoyRepository.save(new ParkingBoy("boy"));
+        this.parkingLotRepository.save(new ParkingLot("1", 1, "1"));
+
+        MvcResult mvcResult = this.mockMvc.perform(put("/parkinglots/1/parkingboy")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"employeeId\":\"boy\"}")).andReturn();
+
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    @DirtiesContext
+    public void should_get_bad_request_when_parking_lot_not_exist() throws Exception {
+        this.parkingBoyRepository.save(new ParkingBoy("boy"));
+
+        MvcResult mvcResult = this.mockMvc.perform(put("/parkinglots/1/parkingboy")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"employeeId\":\"boy\"}")).andReturn();
+
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    @DirtiesContext
+    public void should_get_bad_request_when_parking_boy_not_exist() throws Exception {
+        this.parkingLotRepository.save(new ParkingLot("1", 1, null));
+
+        MvcResult mvcResult = this.mockMvc.perform(put("/parkinglots/1/parkingboy")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"employeeId\":\"boy\"}")).andReturn();
+
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
 }
