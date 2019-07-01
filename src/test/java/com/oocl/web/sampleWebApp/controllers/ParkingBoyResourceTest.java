@@ -2,6 +2,8 @@ package com.oocl.web.sampleWebApp.controllers;
 
 import com.oocl.web.sampleWebApp.domain.ParkingBoy;
 import com.oocl.web.sampleWebApp.domain.ParkingBoyRepository;
+import com.oocl.web.sampleWebApp.domain.ParkingLot;
+import com.oocl.web.sampleWebApp.domain.ParkingLotRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest()
 @AutoConfigureMockMvc
 public class ParkingBoyResourceTest {
+
+    @Autowired
+    private ParkingLotRepository parkingLotRepository;
 
     @Autowired
     private ParkingBoyRepository parkingBoyRepository;
@@ -59,6 +64,20 @@ public class ParkingBoyResourceTest {
         this.mockMvc.perform(get("/parkingboys"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(is("[{\"employeeId\":\"boy\"}]")));
+                .andExpect(content().string(is("[{\"employeeId\":\"boy\",\"parkingLotIDs\":[]}]")));
+    }
+
+    @Test
+    @DirtiesContext
+    public void should_also_get_associated_parking_lot_when_get_parking_boy() throws Exception {
+        this.parkingBoyRepository.save(new ParkingBoy("boy"));
+        this.parkingLotRepository.save(new ParkingLot("1", 1, null));
+        this.mockMvc.perform(put("/parkinglots/1/parkingboy")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"employeeId\":\"boy\"}")).andReturn();
+
+        MvcResult mvcResult = this.mockMvc.perform(get("/parkingboys")).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals("[{\"employeeId\":\"boy\",\"parkingLotIDs\":[\"1\"]}]", mvcResult.getResponse().getContentAsString());
     }
 }
